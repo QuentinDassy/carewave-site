@@ -306,8 +306,9 @@
         }
 
         .card-price {
-            top: 30%;
-            left: 3%;
+            top: 28%;
+            right: 3%;
+            left: auto;
             flex-direction: column;
             align-items: center;
             text-align: center;
@@ -1504,11 +1505,10 @@
             content: '';
             position: absolute;
             top: 30px;
-            left: 12.5%;
-            right: 12.5%;
+            left: calc(12.5% + 30px);
+            right: calc(12.5% + 30px);
             height: 2px;
-            background: linear-gradient(to right, var(--color-accent) 50%, transparent 50%);
-            background-size: 10px 2px;
+            background: var(--color-accent);
             z-index: 0;
         }
 
@@ -3544,11 +3544,6 @@
                             </div>
                             <h3>Demande envoyée !</h3>
                             <p>Merci pour votre confiance. Je vous recontacte sous 24-48h pour discuter de votre projet.</p>
-                            <div class="success-cta">
-                                <a href="https://linkedin.com/in/quentin-dassy" target="_blank" class="btn btn-secondary">
-                                    Me suivre sur LinkedIn
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -3582,11 +3577,6 @@
                 </a>
                 <p>Web designer spécialisé dans l'univers de la santé. Je crée des expériences digitales qui inspirent confiance.</p>
                 <div class="footer-social">
-                    <a href="https://linkedin.com/in/quentin-dassy" class="social-link" target="_blank">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                        </svg>
-                    </a>
                     <a href="mailto:contact@carewave.fr" class="social-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -3873,12 +3863,12 @@
             };
         }
 
-        function sendFormData(data) {
-            // Create email body
-            const subject = encodeURIComponent(`[Carewave] Nouvelle demande de ${data.firstName} ${data.lastName}`);
-            const body = encodeURIComponent(
-`Nouvelle demande de projet via carewave.fr
-
+        async function sendFormData(data) {
+            // Send via Formspree (free service - create account at formspree.io)
+            // Replace YOUR_FORM_ID with your actual Formspree form ID
+            const formspreeEndpoint = 'https://formspree.io/f/xvgzqwkl'; // À remplacer avec ton ID Formspree
+            
+            const emailBody = `
 INFORMATIONS CLIENT
 --------------------
 Nom: ${data.firstName} ${data.lastName}
@@ -3898,16 +3888,40 @@ PLANNING & BUDGET
 Délai: ${data.timeline}
 Date souhaitée: ${data.selectedDate || 'Non précisée'}
 Budget: ${data.budget}
-`
-            );
+`;
 
-            // Open mailto link
-            window.location.href = `mailto:contact@carewave.fr?subject=${subject}&body=${body}`;
-            
-            // Show success after a small delay
-            setTimeout(() => {
+            try {
+                const response = await fetch(formspreeEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: `${data.firstName} ${data.lastName}`,
+                        email: data.email,
+                        phone: data.phone,
+                        _subject: `[Carewave] Nouvelle demande de ${data.firstName} ${data.lastName}`,
+                        message: emailBody
+                    })
+                });
+
+                if (response.ok) {
+                    showSuccess();
+                } else {
+                    // Fallback to mailto if Formspree fails
+                    const subject = encodeURIComponent(`[Carewave] Nouvelle demande de ${data.firstName} ${data.lastName}`);
+                    const body = encodeURIComponent(emailBody);
+                    window.location.href = `mailto:contact@carewave.fr?subject=${subject}&body=${body}`;
+                    showSuccess();
+                }
+            } catch (error) {
+                // Fallback to mailto
+                const subject = encodeURIComponent(`[Carewave] Nouvelle demande de ${data.firstName} ${data.lastName}`);
+                const body = encodeURIComponent(emailBody);
+                window.location.href = `mailto:contact@carewave.fr?subject=${subject}&body=${body}`;
                 showSuccess();
-            }, 500);
+            }
         }
 
         prevBtn.addEventListener('click', () => {
