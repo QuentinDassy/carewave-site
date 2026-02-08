@@ -306,9 +306,9 @@
         }
 
         .card-price {
-            top: 28%;
-            right: 3%;
-            left: auto;
+            top: 18%;
+            left: 38%;
+            right: auto;
             flex-direction: column;
             align-items: center;
             text-align: center;
@@ -317,6 +317,7 @@
             background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
             color: white;
             animation-delay: -2s;
+            z-index: 10;
         }
 
         .card-price .price-tag {
@@ -1501,17 +1502,6 @@
             position: relative;
         }
 
-        .process-grid::before {
-            content: '';
-            position: absolute;
-            top: 30px;
-            left: calc(12.5% + 30px);
-            right: calc(12.5% + 30px);
-            height: 2px;
-            background: var(--color-accent);
-            z-index: 0;
-        }
-
         .process-card {
             text-align: center;
             padding: 2rem;
@@ -1551,10 +1541,6 @@
             .process-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
-            }
-
-            .process-grid::before {
-                display: none;
             }
         }
 
