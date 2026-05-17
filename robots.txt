@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://carewave.fr/sitemap.xml
