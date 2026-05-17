@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carewave.design — Sites web pour professionnels de santé</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231A3A5C'/%3E%3Cpath d='M8 16 Q12 10 16 16 T24 16' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='16' r='2' fill='%23C4873C'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Satoshi:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FAFAF6;
+            --color-bg-alt: #F2EFE8;
+            --color-text: #1A1D2E;
+            --color-text-muted: #63667A;
+            --color-accent: #1A3A5C;
+            --color-accent-light: #2C7873;
+            --color-accent-glow: rgba(26, 58, 92, 0.1);
+            --color-amber: #C4873C;
+            --color-white: #FFFFFF;
+            --color-border: rgba(26, 58, 92, 0.1);
+            --font-display: 'Instrument Serif', Georgia, serif;
+            --font-body: 'Satoshi', -apple-system, sans-serif;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: var(--font-body); background: var(--color-bg); color: var(--color-text); line-height: 1.6; overflow-x: hidden; }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: 1.5rem 4rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(250, 250, 246, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            transition: padding 0.4s var(--ease), box-shadow 0.4s var(--ease);
+        }
+        nav.scrolled { padding: 1rem 4rem; box-shadow: 0 4px 30px rgba(0,0,0,0.06); }
+        .logo {
+            display: flex; align-items: center; gap: 0.6rem;
+            font-family: var(--font-display); font-size: 1.2rem;
+            color: var(--color-text); text-decoration: none;
+        }
+        .logo-icon { flex-shrink: 0; }
+        .nav-links { display: flex; gap: 3rem; list-style: none; }
+        .nav-links a {
+            font-size: 0.875rem; font-weight: 500; color: var(--color-text-muted);
+            text-decoration: none; letter-spacing: 0.02em;
+            position: relative; transition: color 0.3s;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 2px; background: var(--color-amber);
+            transition: width 0.3s var(--ease);
+        }
+        .nav-links a:hover { color: var(--color-text); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--color-accent); color: var(--color-white);
+            padding: 0.75rem 1.75rem; border-radius: 100px;
+            font-size: 0.875rem; font-weight: 500; text-decoration: none;
+            transition: all 0.3s var(--ease);
+        }
+        .nav-cta:hover { background: var(--color-accent-light); transform: translateY(-2px); }
+        .menu-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1001; }
+        .menu-toggle span { width: 28px; height: 2px; background: var(--color-text); transition: all 0.3s; }
+        .mobile-menu {
+            position: fixed; inset: 0; background: var(--color-bg); z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2.5rem;
+            transform: translateX(100%); transition: transform 0.5s var(--ease);
+        }
+        .mobile-menu.open { transform: translateX(0); }
+        .mobile-menu a { font-family: var(--font-display); font-size: 2.5rem; color: var(--color-text); text-decoration: none; }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 7rem 4rem 4rem;
+            position: relative; overflow: hidden;
+            background: var(--color-bg);
+        }
+        .hero-ecg-bg {
+            position: absolute; bottom: 18%; left: 0; right: 0;
+            opacity: 0.05; pointer-events: none; z-index: 0;
+        }
+        .hero-ecg-bg svg { width: 100%; height: 80px; }
+        .ecg-path {
+            stroke-dasharray: 4000; stroke-dashoffset: 4000;
+            animation: ecgDraw 3s 1s ease-out forwards;
+        }
+        @keyframes ecgDraw { to { stroke-dashoffset: 0; } }
+
+        /* Corner accent */
+        .hero::before {
+            content: '';
+            position: absolute; top: 0; right: 0;
+            width: 35%; height: 100%;
+            background: linear-gradient(180deg, rgba(26,58,92,0.04) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .hero-content-wrapper {
+            display: grid; grid-template-columns: 55% 45%;
+            gap: 4rem; align-items: center;
+            max-width: 1300px; margin: 0 auto; width: 100%;
+            position: relative; z-index: 2;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 0.6rem;
+            background: var(--color-white); padding: 0.55rem 1.25rem;
+            border-radius: 100px; font-size: 0.8rem; font-weight: 500;
+            margin-bottom: 2rem; border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            animation: fadeUp 0.7s 0.2s both;
+        }
+        .badge-dot {
+            width: 8px; height: 8px; background: #22C55E; border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+            animation: pulseDot 2s ease-out infinite;
+        }
+        @keyframes pulseDot { 0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.2); } 50% { box-shadow: 0 0 0 6px rgba(34,197,94,0.1); } }
+        .badge-name { font-weight: 600; color: var(--color-accent); }
+        .badge-sep { color: var(--color-text-muted); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 5vw, 4.4rem);
+            font-weight: 400; line-height: 1.15;
+            margin-bottom: 1.75rem; letter-spacing: -0.02em;
+            animation: fadeUp 0.7s 0.4s both;
+        }
+        .hero h1 .highlight { color: var(--color-accent); font-style: italic; }
+        .hero h1 .highlight-alt { color: var(--color-amber); font-style: italic; }
+
+        .hero-description {
+            font-size: 1.1rem; color: var(--color-text-muted);
+            max-width: 470px; margin-bottom: 2.5rem; line-height: 1.75;
+            animation: fadeUp 0.7s 0.6s both;
+        }
+        .hero-ctas {
+            display: flex; gap: 1rem; flex-wrap: wrap;
+            margin-bottom: 2.5rem; animation: fadeUp 0.7s 0.8s both;
+        }
+        .hero-trust {
+            display: flex; align-items: center; gap: 1rem;
+            animation: fadeUp 0.7s 1s both;
+        }
+        .trust-label { font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+        .trust-pills { display: flex; gap: 0.5rem; }
+        .trust-pill {
+            background: var(--color-white); padding: 0.4rem 0.9rem;
+            border-radius: 100px; font-size: 0.78rem; font-weight: 500;
+            border: 1px solid var(--color-border);
+        }
+
+        /* Hero Visual */
+        .hero-visual { display: flex; flex-direction: column; gap: 0.75rem; animation: fadeUp 0.8s 0.5s both; }
+        /* Device showcase — images composites */
+        .device-showcase { position: relative; padding-bottom: 3rem; padding-right: 0; }
+        .imac-wrapper { position: relative; }
+        .imac-img { width: 130%; max-width: none; display: block; margin-left: -30%; filter: drop-shadow(0 24px 48px rgba(26,58,92,0.22)) drop-shadow(0 8px 16px rgba(26,58,92,0.12)); }
+        .iphone-wrapper {
+            position: absolute; bottom: -3rem; right: -2rem;
+            width: 340px;
+        }
+        .iphone-img { width: 100%; display: block; filter: drop-shadow(0 20px 44px rgba(0,0,0,0.32)) drop-shadow(0 6px 12px rgba(0,0,0,0.16)); }
+
+        /* About */
+        #about { background: var(--color-white); padding: 8rem 4rem; }
+        .about-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; gap: 5rem; align-items: center; }
+        .about-photo { position: relative; }
+        .about-photo img { width: 100%; border-radius: 20px; object-fit: cover; aspect-ratio: 3/4; box-shadow: 0 20px 60px rgba(26,58,92,0.15); display: block; }
+        .about-photo::after {
+            content: ''; position: absolute; inset: -8px; border-radius: 26px;
+            border: 2px solid var(--color-amber); opacity: 0.35; z-index: -1;
+        }
+        .about-eyebrow { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-amber); font-weight: 600; display: block; margin-bottom: 0.75rem; }
+        .about-name { font-family: var(--font-display); font-size: 2.4rem; margin: 0 0 0.4rem; line-height: 1.1; }
+        .about-role { color: var(--color-accent); font-weight: 500; font-size: 1rem; line-height: 1.5; margin-bottom: 1.5rem; }
+        .about-bio { color: var(--color-text-muted); line-height: 1.8; margin-bottom: 2rem; font-size: 0.95rem; }
+        .about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .about-tag { padding: 0.4rem 0.9rem; border-radius: 100px; background: var(--color-bg-alt); color: var(--color-text-muted); font-size: 0.78rem; font-weight: 500; }
+
+        .hero-achievement {
+            align-self: flex-end;
+            display: inline-flex; align-items: center; gap: 0.75rem;
+            background: var(--color-amber); color: white;
+            border-radius: 12px; padding: 0.7rem 1.2rem;
+            box-shadow: 0 8px 20px rgba(196,135,60,0.3);
+            animation: fadeUp 0.6s 1.5s both;
+        }
+        .ach-num { font-family: var(--font-display); font-size: 1.5rem; line-height: 1; font-weight: 400; }
+        .ach-label { font-size: 0.7rem; font-weight: 500; opacity: 0.95; line-height: 1.3; }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            animation: fadeUp 0.7s 2s both;
+        }
+        .mouse { width: 24px; height: 38px; border: 2px solid var(--color-text-muted); border-radius: 20px; position: relative; }
+        .wheel {
+            width: 4px; height: 7px; background: var(--color-text-muted); border-radius: 2px;
+            position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+            animation: scrollWheel 2s ease-in-out infinite;
+        }
+        @keyframes scrollWheel { 0%,100% { transform: translateX(-50%) translateY(0); opacity: 1; } 50% { transform: translateX(-50%) translateY(7px); opacity: 0.3; } }
+        .scroll-indicator span { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-muted); }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 1rem 2rem; border-radius: 100px;
+            font-size: 0.95rem; font-weight: 500; text-decoration: none;
+            transition: all 0.3s var(--ease); cursor: pointer; border: none; font-family: var(--font-body);
+        }
+        .btn-primary { background: var(--color-accent); color: white; }
+        .btn-primary:hover { background: var(--color-accent-light); transform: translateY(-3px); box-shadow: 0 15px 40px var(--color-accent-glow); }
+        .btn-secondary { background: transparent; color: var(--color-text); border: 2px solid var(--color-border); }
+        .btn-secondary:hover { border-color: var(--color-accent); color: var(--color-accent); transform: translateY(-3px); }
+        .btn svg { width: 18px; height: 18px; transition: transform 0.3s; }
+        .btn:hover svg { transform: translateX(4px); }
+        .btn-arrow { display: inline-block; transition: transform 0.3s var(--ease); margin-left: 0.25rem; }
+        .btn-magnetic:hover .btn-arrow { transform: translateX(6px); }
+
+        /* CLIENTS */
+        .clients-section {
+            padding: 3.5rem 4rem;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .clients-label { text-align: center; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-text-muted); margin-bottom: 2rem; }
+        .clients-logos { display: flex; justify-content: center; align-items: center; gap: 4rem; flex-wrap: wrap; }
+        .client-logo { font-family: var(--font-display); font-size: 1.1rem; color: var(--color-text-muted); opacity: 0.55; transition: opacity 0.3s; }
+        .client-logo:hover { opacity: 1; }
+
+        /* SECTIONS */
+        section { padding: 8rem 4rem; max-width: 1400px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 5rem; }
+        .section-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-amber); margin-bottom: 1rem; font-weight: 600; }
+        .section-title { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 400; line-height: 1.2; }
+        .section-title span { font-style: italic; color: var(--color-accent); }
+
+        /* SERVICES */
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .service-card {
+            background: var(--color-white); border-radius: 24px; padding: 2.5rem;
+            border: 1px solid var(--color-border); transition: all 0.4s var(--ease);
+            position: relative; overflow: hidden;
+        }
+        .service-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--color-amber); transform: scaleX(0); transform-origin: left;
+            transition: transform 0.4s var(--ease);
+        }
+        .service-card:hover { transform: translateY(-8px); box-shadow: 0 30px 80px rgba(26,58,92,0.08); }
+        .service-card:hover::before { transform: scaleX(1); }
+        .service-icon {
+            width: 56px; height: 56px; background: rgba(26,58,92,0.08); border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.5rem; color: var(--color-accent);
+            transition: all 0.4s var(--ease);
+        }
+        .service-card:hover .service-icon { background: var(--color-accent); color: white; }
+        .service-card h3 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 0.75rem; }
+        .service-card p { color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; }
+        .service-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .service-tag { background: var(--color-bg); padding: 0.35rem 0.8rem; border-radius: 100px; font-size: 0.72rem; color: var(--color-text-muted); }
+
+        /* PORTFOLIO */
+        #portfolio { background: var(--color-bg-alt); margin: 0; max-width: none; padding: 8rem 4rem; }
+        .portfolio-inner { max-width: 1400px; margin: 0 auto; }
+        .portfolio-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .portfolio-card {
+            border-radius: 16px; overflow: hidden;
+            text-decoration: none; color: inherit; display: block;
+            position: relative; aspect-ratio: 4 / 3;
+        }
+        .portfolio-image {
+            position: absolute; inset: 0; padding: 0; overflow: hidden;
+        }
+        .portfolio-mockup { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .mockup-browser {
+            width: 85%; height: 90%; background: white; border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); overflow: hidden;
+            transition: transform 0.4s var(--ease);
+        }
+        .mockup-dots { display: flex; gap: 5px; padding: 9px 11px; background: #F5F5F5; border-bottom: 1px solid #eee; }
+        .mockup-dots span { width: 9px; height: 9px; border-radius: 50%; background: #DDD; }
+        .mockup-content { padding: 10px; height: calc(100% - 33px); display: flex; flex-direction: column; gap: 7px; }
+        .mockup-nav-bar { height: 7px; width: 40%; border-radius: 4px; }
+        .mockup-hero-block { height: 22px; width: 60%; border-radius: 4px; }
+        .mockup-text-line { height: 5px; width: 80%; border-radius: 3px; opacity: 0.5; }
+        .mockup-feature-box { flex: 1; border-radius: 7px; margin-top: 6px; opacity: 0.3; }
+        .mockup-teal { background: linear-gradient(145deg,#E8F4F2,#D0E8E4); }
+        .mockup-teal .mockup-nav-bar,.mockup-teal .mockup-hero-block,.mockup-teal .mockup-text-line,.mockup-teal .mockup-feature-box { background: #2D5A4A; }
+        .mockup-brown { background: linear-gradient(145deg,#F5EDE6,#E8DDD2); }
+        .mockup-brown .mockup-nav-bar,.mockup-brown .mockup-hero-block,.mockup-brown .mockup-text-line,.mockup-brown .mockup-feature-box { background: #8B7355; }
+        .mockup-green { background: linear-gradient(145deg,#E9F0EC,#D4E4DA); }
+        .mockup-green .mockup-nav-bar,.mockup-green .mockup-hero-block,.mockup-green .mockup-text-line,.mockup-green .mockup-feature-box { background: #4A7C5F; }
+        .mockup-coral { background: linear-gradient(145deg,#FDF3ED,#F9E5D8); }
+        .mockup-coral .mockup-nav-bar,.mockup-coral .mockup-hero-block,.mockup-coral .mockup-text-line,.mockup-coral .mockup-feature-box { background: #D4A574; }
+        .mockup-blue { background: linear-gradient(145deg,#EBF2F7,#D6E4EE); }
+        .mockup-blue .mockup-nav-bar,.mockup-blue .mockup-hero-block,.mockup-blue .mockup-text-line,.mockup-blue .mockup-feature-box { background: #5B7C99; }
+        .mockup-purple { background: linear-gradient(145deg,#F3EFF7,#E4DAED); }
+        .mockup-purple .mockup-nav-bar,.mockup-purple .mockup-hero-block,.mockup-purple .mockup-text-line,.mockup-purple .mockup-feature-box { background: #7C5B99; }
+        .portfolio-image img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top;
+            display: block; transition: transform 0.6s var(--ease);
+        }
+        .portfolio-card:hover .portfolio-image img { transform: scale(1.06); }
+        .portfolio-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(26,58,92,0.92) 0%, rgba(26,58,92,0.35) 50%, transparent 75%);
+            transition: background 0.4s;
+        }
+        .portfolio-card:hover .portfolio-overlay {
+            background: linear-gradient(to top, rgba(26,58,92,0.97) 0%, rgba(26,58,92,0.6) 60%, rgba(26,58,92,0.2) 100%);
+        }
+        .portfolio-content {
+            position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+            padding: 1.75rem;
+        }
+        .portfolio-type { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-amber); font-weight: 600; display: block; margin-bottom: 0.4rem; }
+        .portfolio-content h3 { font-family: var(--font-display); font-size: 1.3rem; color: white; margin-bottom: 0; }
+        .portfolio-content p {
+            font-size: 0.88rem; line-height: 1.5; color: rgba(255,255,255,0.75); margin: 0;
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: max-height 0.4s var(--ease), opacity 0.35s, margin-top 0.35s;
+        }
+        .portfolio-card:hover .portfolio-content p { max-height: 4rem; opacity: 1; margin-top: 0.5rem; }
+        .portfolio-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            font-size: 0.85rem; font-weight: 500; color: var(--color-amber);
+            opacity: 0; transform: translateY(6px); margin-top: 0;
+            transition: opacity 0.3s ease 0.05s, transform 0.3s ease 0.05s, margin-top 0.35s;
+        }
+        .portfolio-card:hover .portfolio-link { opacity: 1; transform: translateY(0); margin-top: 0.75rem; }
+        .portfolio-link svg { width: 16px; height: 16px; transition: transform 0.3s; }
+        .portfolio-card:hover .portfolio-link svg { transform: translateX(4px); }
+
+        /* PROCESS */
+        .process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+        .process-grid::before {
+            content: ''; position: absolute; top: calc(2rem + 30px); left: 12.5%; right: 12.5%; height: 2px;
+            background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-amber) 100%);
+            opacity: 0.25; z-index: 0;
+        }
+        .process-card { text-align: center; padding: 2rem; position: relative; z-index: 1; }
+        .process-number {
+            width: 60px; height: 60px; background: var(--color-accent); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display); font-size: 1.5rem; margin: 0 auto 1.5rem;
+            position: relative; z-index: 2; box-shadow: 0 8px 20px rgba(26,58,92,0.25);
+        }
+        .process-card h3 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.75rem; }
+        .process-card p { color: var(--color-text-muted); font-size: 0.9rem; line-height: 1.65; }
+
+        /* TOOLS */
+        #tools { background: var(--color-accent); color: white; margin: 0; max-width: none; }
+        #tools .section-label { color: rgba(196,135,60,0.9); }
+        #tools .section-title { color: white; }
+        #tools .section-title span { color: rgba(196,135,60,0.9); }
+        .tools-inner { max-width: 1400px; margin: 0 auto; }
+        .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+        .tool-card {
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px; padding: 2rem; text-align: center;
+            transition: all 0.3s var(--ease);
+        }
+        .tool-card:hover { background: rgba(255,255,255,0.13); transform: translateY(-5px); }
+        .tool-icon { width: 56px; height: 56px; margin: 0 auto 1rem; background: rgba(255,255,255,0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .tool-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .tool-card span { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+
+        /* CONTACT CTA */
+        .contact-cta-section { padding: 6rem 4rem; background: var(--color-bg-alt); }
+        .contact-cta {
+            max-width: 800px; margin: 0 auto; text-align: center;
+            background: var(--color-white); border-radius: 28px;
+            padding: 5rem 4rem; border: 1px solid var(--color-border);
+            box-shadow: 0 20px 60px rgba(26,58,92,0.06);
+        }
+        .contact-cta-eyebrow { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-amber); font-weight: 600; display: block; margin-bottom: 1.5rem; }
+        .contact-cta h2 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; margin-bottom: 1rem; color: var(--color-accent); }
+        .contact-cta p { font-size: 1.05rem; color: var(--color-text-muted); margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+        /* CONTACT FORM */
+        .contact-section { background: var(--color-bg-alt); max-width: none; margin: 0; padding: 8rem 4rem; }
+        .contact-inner { max-width: 900px; margin: 0 auto; }
+        .contact-container {
+            background: var(--color-white); border-radius: 28px; padding: 3rem;
+            box-shadow: 0 20px 80px rgba(26,58,92,0.07); border: 1px solid var(--color-border);
+        }
+        .form-progress { display: flex; align-items: center; justify-content: center; margin-bottom: 3rem; }
+        .progress-step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; position: relative; z-index: 1; }
+        .step-circle {
+            width: 44px; height: 44px; border-radius: 50%; background: var(--color-bg-alt);
+            border: 2px solid var(--color-border); display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.9rem; color: var(--color-text-muted);
+            transition: all 0.4s var(--ease);
+        }
+        .progress-step.active .step-circle, .progress-step.completed .step-circle { background: var(--color-accent); border-color: var(--color-accent); color: white; }
+        .progress-step.completed .step-circle { font-size: 0; }
+        .progress-step.completed .step-circle::after { content: '✓'; font-size: 0.9rem; }
+        .step-label { font-size: 0.72rem; color: var(--color-text-muted); font-weight: 500; transition: color 0.3s; }
+        .progress-step.active .step-label { color: var(--color-accent); }
+        .progress-line { width: 60px; height: 3px; background: var(--color-border); margin: 0 0.5rem 1.5rem; border-radius: 2px; overflow: hidden; position: relative; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--color-accent); transition: width 0.4s var(--ease); }
+        .form-steps-container { min-height: 400px; }
+        .form-step { display: none; animation: fadeInStep 0.4s var(--ease); }
+        .form-step.active { display: block; }
+        @keyframes fadeInStep { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .step-content h3 { font-family: var(--font-display); font-size: 1.65rem; margin-bottom: 0.5rem; text-align: center; }
+        .step-description { color: var(--color-text-muted); text-align: center; margin-bottom: 2rem; }
+        .project-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .project-type-card { cursor: pointer; }
+        .project-type-card input { display: none; }
+        .project-type-card .card-content {
+            background: var(--color-bg); border: 2px solid var(--color-border); border-radius: 14px;
+            padding: 1.5rem; text-align: center; transition: all 0.3s var(--ease);
+        }
+        .project-type-card:hover .card-content { border-color: var(--color-accent); transform: translateY(-3px); }
+        .project-type-card input:checked + .card-content { border-color: var(--color-accent); background: var(--color-accent-glow); }
+        .card-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+        .project-type-card h4 { font-size: 0.95rem; margin-bottom: 0.2rem; }
+        .project-type-card p { font-size: 0.78rem; color: var(--color-text-muted); }
+        .form-fields { max-width: 600px; margin: 0 auto; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-size: 0.88rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 0.9rem 1.2rem; border: 2px solid var(--color-border);
+            border-radius: 10px; font-size: 1rem; font-family: var(--font-body);
+            background: var(--color-bg); transition: all 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--color-accent); background: white; box-shadow: 0 0 0 4px var(--color-accent-glow); }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: var(--color-text-muted); }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; }
+        .checkbox-item {
+            display: flex; align-items: center; gap: 0.75rem; cursor: pointer;
+            padding: 0.7rem 1rem; background: var(--color-bg); border-radius: 10px;
+            border: 2px solid transparent; transition: all 0.3s;
+        }
+        .checkbox-item:hover { border-color: var(--color-accent); }
+        .checkbox-item input { display: none; }
+        .checkmark { width: 20px; height: 20px; border: 2px solid var(--color-border); border-radius: 5px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; flex-shrink: 0; }
+        .checkbox-item input:checked + .checkmark { background: var(--color-accent); border-color: var(--color-accent); }
+        .checkbox-item input:checked + .checkmark::after { content: '✓'; color: white; font-size: 0.75rem; }
+        .planning-options { display: flex; flex-direction: column; gap: 1rem; max-width: 500px; margin: 0 auto 2rem; }
+        .planning-option { cursor: pointer; }
+        .planning-option input { display: none; }
+        .planning-option .option-content { display: flex; align-items: center; gap: 1rem; padding: 1.2rem 1.5rem; background: var(--color-bg); border: 2px solid var(--color-border); border-radius: 14px; transition: all 0.3s var(--ease); }
+        .planning-option:hover .option-content { border-color: var(--color-accent); }
+        .planning-option input:checked + .option-content { border-color: var(--color-accent); background: var(--color-accent-glow); }
+        .option-icon { font-size: 1.4rem; }
+        .option-text h4 { font-size: 0.95rem; margin-bottom: 0.15rem; }
+        .option-text p { font-size: 0.82rem; color: var(--color-text-muted); }
+        .calendar-container { max-width: 400px; margin: 0 auto 2rem; background: var(--color-bg); border-radius: 18px; padding: 1.5rem; display: none; animation: fadeInStep 0.4s; }
+        .calendar-container.visible { display: block; }
+        .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .calendar-header h4 { font-family: var(--font-display); font-size: 1.05rem; }
+        .calendar-nav { width: 34px; height: 34px; border: none; background: white; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .calendar-nav:hover { background: var(--color-accent); color: white; }
+        .calendar-weekdays { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.2rem; margin-bottom: 0.5rem; }
+        .calendar-weekdays span { text-align: center; font-size: 0.72rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; }
+        .calendar-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.2rem; }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; border: none; background: transparent; }
+        .calendar-day:hover:not(.disabled):not(.empty) { background: var(--color-accent-glow); }
+        .calendar-day.selected { background: var(--color-accent); color: white; font-weight: 600; }
+        .calendar-day.today { border: 2px solid var(--color-accent); }
+        .calendar-day.disabled { color: var(--color-text-muted); opacity: 0.35; cursor: not-allowed; }
+        .selected-date-display { text-align: center; margin-top: 1rem; font-size: 0.88rem; color: var(--color-accent); font-weight: 500; }
+        .budget-section { max-width: 600px; margin: 0 auto; }
+        .budget-section > label { display: block; font-size: 0.88rem; font-weight: 500; margin-bottom: 1rem; text-align: center; }
+        .budget-options { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.7rem; }
+        .budget-option { cursor: pointer; }
+        .budget-option input { display: none; }
+        .budget-option span { display: block; padding: 0.9rem; text-align: center; background: var(--color-bg); border: 2px solid var(--color-border); border-radius: 10px; font-size: 0.82rem; font-weight: 500; transition: all 0.3s; }
+        .budget-option:hover span { border-color: var(--color-accent); }
+        .budget-option input:checked + span { border-color: var(--color-accent); background: var(--color-accent); color: white; }
+        .contact-pref-options { display: flex; gap: 1rem; }
+        .contact-pref { cursor: pointer; flex: 1; }
+        .contact-pref input { display: none; }
+        .contact-pref span { display: block; padding: 0.9rem; text-align: center; background: var(--color-bg); border: 2px solid var(--color-border); border-radius: 10px; font-size: 0.88rem; transition: all 0.3s; }
+        .contact-pref:hover span { border-color: var(--color-accent); }
+        .contact-pref input:checked + span { border-color: var(--color-accent); background: var(--color-accent-glow); }
+        .form-navigation { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--color-border); }
+        .form-navigation .btn { min-width: 140px; }
+        .btn-prev svg { transform: rotate(180deg); }
+        .btn-prev:hover svg { transform: rotate(180deg) translateX(-4px); }
+        .success-step .success-content { text-align: center; padding: 3rem 2rem; }
+        .success-icon { color: var(--color-accent); margin-bottom: 1.5rem; animation: successPop 0.5s var(--ease); }
+        @keyframes successPop { 0%{transform:scale(0);opacity:0} 50%{transform:scale(1.2)} 100%{transform:scale(1);opacity:1} }
+        .success-content h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 1rem; }
+        .success-content p { color: var(--color-text-muted); max-width: 400px; margin: 0 auto; }
+
+        /* FOOTER */
+        footer { background: var(--color-text); color: white; padding: 5rem 4rem 2rem; }
+        .footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; padding-bottom: 4rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .footer-brand .logo { color: white; display: flex; margin-bottom: 1rem; }
+        .footer-brand .logo span { color: white; }
+        .footer-brand p { color: rgba(255,255,255,0.55); font-size: 0.92rem; line-height: 1.7; max-width: 280px; }
+        .footer-col h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1.5rem; color: rgba(255,255,255,0.35); }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 0.75rem; }
+        .footer-col a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.92rem; transition: color 0.3s; }
+        .footer-col a:hover { color: white; }
+        .footer-social { display: flex; gap: 1rem; margin-top: 2rem; }
+        .social-link { width: 42px; height: 42px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: all 0.3s; }
+        .social-link:hover { background: var(--color-amber); transform: translateY(-3px); }
+        .footer-bottom { max-width: 1400px; margin: 0 auto; padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: rgba(255,255,255,0.35); }
+
+        /* REVEAL */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s var(--ease); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* PRELOADER */
+        .preloader { position: fixed; inset: 0; background: var(--color-bg); z-index: 10000; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s, visibility 0.5s; }
+        .preloader.hidden { opacity: 0; visibility: hidden; }
+        .preloader-text { font-family: var(--font-display); font-size: 2rem; font-style: italic; color: var(--color-accent); }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .tools-grid { grid-template-columns: repeat(3, 1fr); }
+            .process-grid { grid-template-columns: repeat(2, 1fr); }
+            .process-grid::before { display: none; }
+        }
+        @media (max-width: 992px) {
+            nav { padding: 1rem 2rem; }
+            nav.scrolled { padding: 0.75rem 2rem; }
+            .nav-links { display: none; }
+            .menu-toggle { display: flex; }
+            .hero { padding: 6rem 2rem 4rem; }
+            .hero-content-wrapper { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+            .hero-description, .trust-label { margin-left: auto; margin-right: auto; }
+            .hero-ctas, .hero-trust { justify-content: center; }
+            .hero-visual { max-width: 500px; margin: 0 auto; overflow: visible; }
+            .imac-img { width: 100%; margin-left: 0; }
+            .iphone-wrapper { width: 200px; bottom: -2rem; right: -1rem; }
+            .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+            .about-photo { max-width: 240px; margin: 0 auto; }
+            .hero-achievement { align-self: flex-start; }
+            section { padding: 5rem 2rem; }
+            #portfolio, #tools { padding: 5rem 2rem; }
+            .portfolio-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr 1fr; gap: 2rem; }
+        }
+        @media (max-width: 768px) {
+            .services-grid, .tools-grid { grid-template-columns: 1fr; }
+            .process-grid { grid-template-columns: 1fr; }
+            .clients-section { padding: 3rem 2rem; }
+            .clients-logos { gap: 2rem; }
+            .contact-container { padding: 2rem 1.5rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .checkbox-grid { grid-template-columns: 1fr; }
+            .budget-options { grid-template-columns: repeat(2,1fr); }
+            .contact-pref-options { flex-direction: column; }
+            .project-type-grid { grid-template-columns: repeat(2,1fr); }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .footer-brand p { max-width: none; }
+            .footer-social { justify-content: center; }
+            .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+            .contact-cta { padding: 3rem 2rem; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.4rem; }
+            .project-type-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="preloader"><span class="preloader-text">cw.</span></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="logo">
+            <svg class="logo-icon" viewBox="0 0 32 32" width="30" height="30">
+                <rect width="32" height="32" rx="7" fill="#1A3A5C"/>
+                <path d="M8 16 Q12 10 16 16 T24 16" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <circle cx="24" cy="16" r="2.5" fill="#C4873C"/>
+            </svg>
+            <span>carewave</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Réalisations</a></li>
+            <li><a href="#process">Méthode</a></li>
+            <li><a href="#tools">Outils</a></li>
+        </ul>
+        <a href="#contact" class="nav-cta">Discutons</a>
+        <div class="menu-toggle"><span></span><span></span><span></span></div>
+    </nav>
+
+    <div class="mobile-menu">
+        <a href="#services">Services</a>
+        <a href="#portfolio">Réalisations</a>
+        <a href="#process">Méthode</a>
+        <a href="#tools">Outils</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-ecg-bg">
+            <svg viewBox="0 0 1400 80" preserveAspectRatio="none" fill="none">
+                <path class="ecg-path" d="M-100,40 L80,40 L100,32 L116,40 L132,40 L139,52 L145,4 L152,62 L159,40 L175,40 L192,26 L208,40 L308,40 L328,32 L344,40 L360,40 L367,52 L373,4 L380,62 L387,40 L403,40 L420,26 L436,40 L536,40 L556,32 L572,40 L588,40 L595,52 L601,4 L608,62 L615,40 L631,40 L648,26 L664,40 L764,40 L784,32 L800,40 L816,40 L823,52 L829,4 L836,62 L843,40 L859,40 L876,26 L892,40 L992,40 L1012,32 L1028,40 L1044,40 L1051,52 L1057,4 L1064,62 L1071,40 L1087,40 L1104,26 L1120,40 L1220,40 L1240,32 L1256,40 L1272,40 L1279,52 L1285,4 L1292,62 L1299,40 L1315,40 L1332,26 L1348,40 L1600,40" stroke="#1A3A5C" stroke-width="1.5"/>
+            </svg>
+        </div>
+
+        <div class="hero-content-wrapper">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    Disponible pour nouveaux projets
+                </div>
+
+                <h1>
+                    Je crée des<br>
+                    <span class="highlight">sites web</span> qui<br>
+                    <span class="highlight-alt">transforment</span><br>
+                    vos <span class="highlight">patients</span>
+                </h1>
+
+                <p class="hero-description">
+                    Spécialiste du web médical, je conçois des sites qui reflètent votre expertise et inspirent confiance à vos patients dès le premier regard.
+                </p>
+
+                <div class="hero-ctas">
+                    <a href="#contact" class="btn btn-primary">
+                        <span>Démarrer un projet</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#portfolio" class="btn btn-secondary btn-magnetic">
+                        <span>Voir mes projets</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="hero-trust">
+                    <span class="trust-label">Compatible avec :</span>
+                    <div class="trust-pills">
+                        <span class="trust-pill">Doctolib</span>
+                        <span class="trust-pill">WordPress</span>
+                        <span class="trust-pill">Données de santé</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="device-showcase">
+                    <div class="imac-wrapper">
+                        <img src="mockupimac.png" alt="CPTS Paris 11 sur iMac" class="imac-img">
+                        <div class="iphone-wrapper">
+                            <img src="mockupiphone2.png" alt="CPTS Paris 11 sur iPhone" class="iphone-img">
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-achievement">
+                    <span class="ach-num">15+</span>
+                    <span class="ach-label">projets<br>médicaux</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="mouse"><div class="wheel"></div></div>
+            <span>Défiler</span>
+        </div>
+    </section>
+
+    <!-- Clients -->
+    <div class="clients-section">
+        <p class="clients-label">Ils m'ont fait confiance</p>
+        <div class="clients-logos">
+            <span class="client-logo">CPTS Paris 5</span>
+            <span class="client-logo">CPTS Paris 11</span>
+            <span class="client-logo">Cabinet Sapiens</span>
+            <span class="client-logo">Cabinet Bel-Air</span>
+            <span class="client-logo">Assas Pilates Ballet</span>
+        </div>
+    </div>
+
+    <!-- Services -->
+    <section id="services">
+        <div class="section-header reveal">
+            <p class="section-label">Mes services</p>
+            <h2 class="section-title">Des solutions <span>sur mesure</span></h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card reveal">
+                <div class="service-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                </div>
+                <h3>Sites vitrine</h3>
+                <p>Un site professionnel qui reflète votre expertise et rassure vos patients dès le premier regard.</p>
+                <div class="service-tags"><span class="service-tag">WordPress</span><span class="service-tag">Responsive</span><span class="service-tag">SEO</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4"/></svg>
+                </div>
+                <h3>Sites CPTS & MSP</h3>
+                <p>Plateformes dédiées aux structures de santé coordonnées : présentation, formulaires, espaces membres.</p>
+                <div class="service-tags"><span class="service-tag">Multilingue</span><span class="service-tag">Accessibilité</span><span class="service-tag">Sécurisé</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                </div>
+                <h3>Applications web</h3>
+                <p>Solutions interactives : prise de rendez-vous, questionnaires patients, portails de suivi.</p>
+                <div class="service-tags"><span class="service-tag">React</span><span class="service-tag">API</span><span class="service-tag">Cloud</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                </div>
+                <h3>E-commerce santé</h3>
+                <p>Boutiques en ligne pour matériel médical, compléments alimentaires ou produits de bien-être.</p>
+                <div class="service-tags"><span class="service-tag">WooCommerce</span><span class="service-tag">Shopify</span><span class="service-tag">Paiement</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <h3>Automatisation</h3>
+                <p>Simplifiez votre quotidien : rappels automatiques, formulaires intelligents, synchronisation agenda.</p>
+                <div class="service-tags"><span class="service-tag">Doctolib</span><span class="service-tag">Zapier</span><span class="service-tag">CRM</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                </div>
+                <h3>Maintenance & SEO</h3>
+                <p>Accompagnement continu : mises à jour, sauvegardes, référencement local et optimisation des performances.</p>
+                <div class="service-tags"><span class="service-tag">Analytics</span><span class="service-tag">Performance</span><span class="service-tag">Support</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section id="portfolio">
+        <div class="portfolio-inner">
+            <div class="section-header reveal">
+                <p class="section-label">Portfolio</p>
+                <h2 class="section-title">Mes <span>réalisations</span></h2>
+            </div>
+            <div class="portfolio-grid">
+                <a href="https://cptsparis11.fr/" target="_blank" class="portfolio-card reveal">
+                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fcptsparis11.fr%2F?w=1200" alt="CPTS Paris 11" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-content"><span class="portfolio-type">Structure coordonnée</span><h3>CPTS Paris 11</h3><p>Site pour la Communauté Professionnelle Territoriale de Santé du 11ème arrondissement.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+                </a>
+                <a href="https://cptsparis5.com/" target="_blank" class="portfolio-card reveal">
+                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fcptsparis5.com%2F?w=1200" alt="CPTS Paris 5" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-content"><span class="portfolio-type">Structure coordonnée</span><h3>CPTS Paris 5</h3><p>Site vitrine pour la Communauté Professionnelle Territoriale de Santé du 5ème arrondissement.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+                </a>
+                <a href="https://www.cabinetsapiens.fr/" target="_blank" class="portfolio-card reveal">
+                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fwww.cabinetsapiens.fr%2F?w=1200" alt="Cabinet Sapiens" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-content"><span class="portfolio-type">Cabinet médical</span><h3>Cabinet Sapiens</h3><p>Cabinet d'ostéopathie de Raphaël Monne à Toulouse. Prise de rendez-vous Doctolib intégrée.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+                </a>
+                <a href="https://cabinet-belair.fr/" target="_blank" class="portfolio-card reveal">
+                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fcabinet-belair.fr%2F?w=1200" alt="Cabinet Bel-Air" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-content"><span class="portfolio-type">Cabinet paramédical</span><h3>Cabinet Bel-Air</h3><p>Cabinet pluridisciplinaire Paris 12 : kinésithérapie, orthophonie, psychomotricité.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+                </a>
+                <a href="https://assas-pilates-ballet.com/" target="_blank" class="portfolio-card reveal">
+                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fassas-pilates-ballet.com%2F?w=1200" alt="Assas Pilates Ballet" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-content"><span class="portfolio-type">Studio bien-être</span><h3>Assas Pilates Ballet</h3><p>Studio de Pilates fondé par Leïla Dilhac, danseuse à l'Opéra de Paris.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+                </a>
+                <a href="https://www.cabinet-kinesitherapie-paris.com/" target="_blank" class="portfolio-card reveal">
+                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fwww.cabinet-kinesitherapie-paris.com%2F?w=1200" alt="Cabinet des Grands Augustins" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-content"><span class="portfolio-type">Cabinet kinésithérapie</span><h3>Cabinet des Grands Augustins</h3><p>Cabinet de kinésithérapie Paris 6 avec 5 praticiens. Intégration Doctolib.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Qui suis-je -->
+    <section id="about">
+        <div class="about-inner">
+            <div class="about-photo reveal">
+                <img src="aude.png" alt="Aude K., kinésithérapeute & designer UX/UI">
+            </div>
+            <div class="about-content reveal">
+                <span class="about-eyebrow">Qui suis-je</span>
+                <h2 class="about-name">Aude K.</h2>
+                <p class="about-role">Kinésithérapeute spécialisée en maxillo-facial<br>& Designer UX/UI chez Carewave</p>
+                <p class="about-bio">Praticienne de santé de formation, j'apporte chez Carewave une double expertise rare : la connaissance du terrain médical et la rigueur de la conception centrée sur l'utilisateur. Je conçois des interfaces que les professionnels de santé adoptent vraiment — parce que je comprends leurs contraintes du quotidien.</p>
+                <div class="about-tags">
+                    <span class="about-tag">Kinésithérapie</span>
+                    <span class="about-tag">Maxillo-facial</span>
+                    <span class="about-tag">UX / UI Design</span>
+                    <span class="about-tag">Expérience patient</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section id="process">
+        <div class="section-header reveal">
+            <p class="section-label">Ma méthode</p>
+            <h2 class="section-title">Un processus <span>transparent</span></h2>
+        </div>
+        <div class="process-grid">
+            <div class="process-card reveal"><div class="process-number">1</div><h3>Découverte</h3><p>Échange approfondi sur vos besoins, votre patientèle et vos objectifs. Audit de l'existant.</p></div>
+            <div class="process-card reveal"><div class="process-number">2</div><h3>Conception</h3><p>Création des maquettes et de l'architecture du site. Validation avec vous à chaque étape.</p></div>
+            <div class="process-card reveal"><div class="process-number">3</div><h3>Développement</h3><p>Intégration technique, optimisation mobile et tests. Site de préproduction pour vos retours.</p></div>
+            <div class="process-card reveal"><div class="process-number">4</div><h3>Lancement</h3><p>Mise en ligne, formation à l'utilisation et accompagnement post-lancement.</p></div>
+        </div>
+    </section>
+
+    <!-- Tools -->
+    <section id="tools">
+        <div class="tools-inner">
+            <div class="section-header reveal">
+                <p class="section-label">Mes outils</p>
+                <h2 class="section-title">Technologies <span>maîtrisées</span></h2>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card reveal"><div class="tool-icon">🔵</div><h4>WordPress</h4><span>CMS & Thèmes</span></div>
+                <div class="tool-card reveal"><div class="tool-icon">🛍️</div><h4>WooCommerce</h4><span>E-commerce</span></div>
+                <div class="tool-card reveal"><div class="tool-icon">🟢</div><h4>Shopify</h4><span>Boutiques en ligne</span></div>
+                <div class="tool-card reveal"><div class="tool-icon">⚡</div><h4>Elementor</h4><span>Page builder</span></div>
+                <div class="tool-card reveal"><div class="tool-icon">🎨</div><h4>Figma</h4><span>Design UI/UX</span></div>
+                <div class="tool-card reveal"><div class="tool-icon">📅</div><h4>Doctolib</h4><span>Intégration RDV</span></div>
+                <div class="tool-card reveal"><div class="tool-icon">📊</div><h4>Google Analytics</h4><span>Analyse du trafic</span></div>
+                <div class="tool-card reveal"><div class="tool-icon">📝</div><h4>Notion</h4><span>Gestion de projet</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <div class="contact-cta-section">
+        <div class="contact-cta reveal">
+            <span class="contact-cta-eyebrow">Prêt à vous lancer ?</span>
+            <h2>Votre site mérite<br><em>mieux qu'un template</em></h2>
+            <p>Chaque projet est unique. Discutons de vos besoins et je vous proposerai une solution adaptée à votre pratique et à vos patients.</p>
+            <a href="#contact" class="btn btn-primary">Démarrer maintenant <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+    </div>
+
+    <!-- Contact Form -->
+    <section id="contact" class="contact-section">
+        <div class="contact-inner">
+            <div class="section-header reveal">
+                <p class="section-label">Contact</p>
+                <h2 class="section-title">Démarrons votre <span>projet</span></h2>
+            </div>
+            <div class="contact-container reveal">
+                <div class="form-progress">
+                    <div class="progress-step active" data-step="1"><div class="step-circle">1</div><span class="step-label">Projet</span></div>
+                    <div class="progress-line"><div class="progress-fill"></div></div>
+                    <div class="progress-step" data-step="2"><div class="step-circle">2</div><span class="step-label">Détails</span></div>
+                    <div class="progress-line"><div class="progress-fill"></div></div>
+                    <div class="progress-step" data-step="3"><div class="step-circle">3</div><span class="step-label">Planning</span></div>
+                    <div class="progress-line"><div class="progress-fill"></div></div>
+                    <div class="progress-step" data-step="4"><div class="step-circle">4</div><span class="step-label">Contact</span></div>
+                </div>
+
+                <div class="form-steps-container">
+                    <!-- Step 1 -->
+                    <div class="form-step active" data-step="1">
+                        <div class="step-content">
+                            <h3>Quel type de projet avez-vous ?</h3>
+                            <p class="step-description">Sélectionnez le type de site qui correspond à vos besoins</p>
+                            <div class="project-type-grid">
+                                <label class="project-type-card"><input type="radio" name="projectType" value="cpts"><div class="card-content"><div class="card-icon">🏛️</div><h4>CPTS / MSP</h4><p>Communauté ou Maison de santé</p></div></label>
+                                <label class="project-type-card"><input type="radio" name="projectType" value="cabinet"><div class="card-content"><div class="card-icon">🏥</div><h4>Cabinet médical</h4><p>Médecin, kiné, orthophoniste...</p></div></label>
+                                <label class="project-type-card"><input type="radio" name="projectType" value="wellbeing"><div class="card-content"><div class="card-icon">🧘</div><h4>Bien-être</h4><p>Pilates, yoga, sophrologie...</p></div></label>
+                                <label class="project-type-card"><input type="radio" name="projectType" value="ecommerce"><div class="card-content"><div class="card-icon">🛒</div><h4>E-commerce</h4><p>Vente de produits santé</p></div></label>
+                                <label class="project-type-card"><input type="radio" name="projectType" value="redesign"><div class="card-content"><div class="card-icon">🔄</div><h4>Refonte</h4><p>Moderniser un site existant</p></div></label>
+                                <label class="project-type-card"><input type="radio" name="projectType" value="other"><div class="card-content"><div class="card-icon">✨</div><h4>Autre</h4><p>Projet personnalisé</p></div></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="form-step" data-step="2">
+                        <div class="step-content">
+                            <h3>Parlez-moi de votre projet</h3>
+                            <p class="step-description">Ces informations m'aideront à mieux comprendre vos besoins</p>
+                            <div class="form-fields">
+                                <div class="form-group">
+                                    <label for="structureName">Nom de votre structure</label>
+                                    <input type="text" id="structureName" name="structureName" placeholder="Cabinet du Dr Martin, CPTS Paris 15...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="projectDescription">Décrivez votre projet en quelques mots</label>
+                                    <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Je souhaite créer un site pour mon cabinet de kinésithérapie avec prise de RDV en ligne..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fonctionnalités souhaitées</label>
+                                    <div class="checkbox-grid">
+                                        <label class="checkbox-item"><input type="checkbox" name="features" value="rdv"><span class="checkmark"></span><span>Prise de RDV (Doctolib)</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="features" value="team"><span class="checkmark"></span><span>Présentation équipe</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="features" value="blog"><span class="checkmark"></span><span>Blog / Actualités</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="features" value="forms"><span class="checkmark"></span><span>Formulaires</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="features" value="members"><span class="checkmark"></span><span>Espace membres</span></label>
+                                        <label class="checkbox-item"><input type="checkbox" name="features" value="multilang"><span class="checkmark"></span><span>Multilingue</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="form-step" data-step="3">
+                        <div class="step-content">
+                            <h3>Quand souhaitez-vous lancer ?</h3>
+                            <p class="step-description">Sélectionnez une date cible ou indiquez si vous êtes flexible</p>
+                            <div class="planning-options">
+                                <label class="planning-option"><input type="radio" name="timeline" value="flexible" checked><div class="option-content"><div class="option-icon">🌊</div><div class="option-text"><h4>Pas de date définie</h4><p>Je suis flexible sur le timing</p></div></div></label>
+                                <label class="planning-option"><input type="radio" name="timeline" value="urgent"><div class="option-content"><div class="option-icon">⚡</div><div class="option-text"><h4>Urgent (< 1 mois)</h4><p>J'ai besoin du site rapidement</p></div></div></label>
+                                <label class="planning-option"><input type="radio" name="timeline" value="date"><div class="option-content"><div class="option-icon">📅</div><div class="option-text"><h4>Date précise</h4><p>J'ai une deadline en tête</p></div></div></label>
+                            </div>
+                            <div class="calendar-container" id="calendarContainer">
+                                <div class="calendar-header">
+                                    <button type="button" class="calendar-nav prev" id="prevMonth"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+                                    <h4 id="calendarTitle">Mois 2026</h4>
+                                    <button type="button" class="calendar-nav next" id="nextMonth"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+                                </div>
+                                <div class="calendar-weekdays"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span></div>
+                                <div class="calendar-days" id="calendarDays"></div>
+                                <input type="hidden" name="selectedDate" id="selectedDate">
+                                <p class="selected-date-display" id="selectedDateDisplay"></p>
+                            </div>
+                            <div class="budget-section">
+                                <label>Budget estimé</label>
+                                <div class="budget-options">
+                                    <label class="budget-option"><input type="radio" name="budget" value="small"><span>< 1 000€</span></label>
+                                    <label class="budget-option"><input type="radio" name="budget" value="medium"><span>1 000 – 3 000€</span></label>
+                                    <label class="budget-option"><input type="radio" name="budget" value="large"><span>3 000 – 5 000€</span></label>
+                                    <label class="budget-option"><input type="radio" name="budget" value="enterprise"><span>> 5 000€</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="form-step" data-step="4">
+                        <div class="step-content">
+                            <h3>Comment vous contacter ?</h3>
+                            <p class="step-description">Vos coordonnées pour que je puisse vous recontacter</p>
+                            <div class="form-fields">
+                                <div class="form-row">
+                                    <div class="form-group"><label for="firstName">Prénom *</label><input type="text" id="firstName" name="firstName" required placeholder="Jean"></div>
+                                    <div class="form-group"><label for="lastName">Nom *</label><input type="text" id="lastName" name="lastName" required placeholder="Dupont"></div>
+                                </div>
+                                <div class="form-group"><label for="email">Email *</label><input type="email" id="email" name="email" required placeholder="jean.dupont@email.com"></div>
+                                <div class="form-group"><label for="phone">Téléphone</label><input type="tel" id="phone" name="phone" placeholder="06 12 34 56 78"></div>
+                                <div class="form-group">
+                                    <label>Mode de contact préféré</label>
+                                    <div class="contact-pref-options">
+                                        <label class="contact-pref"><input type="radio" name="contactMethod" value="email" checked><span>📧 Email</span></label>
+                                        <label class="contact-pref"><input type="radio" name="contactMethod" value="phone"><span>📞 Téléphone</span></label>
+                                        <label class="contact-pref"><input type="radio" name="contactMethod" value="visio"><span>💻 Visio</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success -->
+                    <div class="form-step success-step" data-step="success">
+                        <div class="success-content">
+                            <div class="success-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <h3>Demande envoyée !</h3>
+                            <p>Merci pour votre confiance. Je vous recontacte sous 24–48h pour discuter de votre projet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary btn-prev" id="prevBtn" style="visibility:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Précédent
+                    </button>
+                    <button type="button" class="btn btn-primary btn-next" id="nextBtn">
+                        Suivant
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <svg viewBox="0 0 32 32" width="30" height="30"><rect width="32" height="32" rx="7" fill="white" opacity="0.15"/><path d="M8 16 Q12 10 16 16 T24 16" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="24" cy="16" r="2.5" fill="#C4873C"/></svg>
+                    <span>carewave</span>
+                </a>
+                <p>Quentin Dassy — Web designer spécialisé dans l'univers de la santé. Je crée des sites qui inspirent confiance et convertissent.</p>
+                <div class="footer-social">
+                    <a href="mailto:contact@carewave.fr" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-col"><h4>Navigation</h4><ul><li><a href="#services">Services</a></li><li><a href="#portfolio">Portfolio</a></li><li><a href="#process">Méthode</a></li><li><a href="#contact">Contact</a></li></ul></div>
+            <div class="footer-col"><h4>Services</h4><ul><li><a href="#services">Sites vitrine</a></li><li><a href="#services">Sites CPTS</a></li><li><a href="#services">E-commerce</a></li><li><a href="#services">Maintenance</a></li></ul></div>
+            <div class="footer-col"><h4>Contact</h4><ul><li><a href="mailto:contact@carewave.fr">contact@carewave.fr</a></li><li><a href="#">Paris, France</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Quentin Dassy — Carewave.design. Tous droits réservés.</p>
+            <p>Conçu avec soin pour le secteur de la santé</p>
+        </div>
+    </footer>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => document.querySelector('.preloader').classList.add('hidden'), 600);
+        });
+
+        // Nav scroll
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 100));
+
+        // Mobile menu
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        menuToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
+        mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+        // Scroll reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => revealElements.forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active'); });
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(a.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Magnetic button
+        document.querySelectorAll('.btn-magnetic').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const r = btn.getBoundingClientRect();
+                btn.style.transform = `translate(${(e.clientX-r.left-r.width/2)*0.1}px,${(e.clientY-r.top-r.height/2)*0.1}px)`;
+            });
+            btn.addEventListener('mouseleave', () => btn.style.transform = 'translate(0,0)');
+        });
+
+        // ---- MULTI-STEP FORM ----
+        const formSteps = document.querySelectorAll('.form-step');
+        const progressSteps = document.querySelectorAll('.progress-step');
+        const progressLines = document.querySelectorAll('.progress-line');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function updateForm() {
+            formSteps.forEach(s => s.classList.remove('active'));
+            const active = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            if (active) active.classList.add('active');
+
+            progressSteps.forEach((s, i) => {
+                s.classList.remove('active', 'completed');
+                if (i + 1 === currentStep) s.classList.add('active');
+                else if (i + 1 < currentStep) s.classList.add('completed');
+            });
+
+            progressLines.forEach((l, i) => {
+                l.querySelector('.progress-fill').style.width = i < currentStep - 1 ? '100%' : '0%';
+            });
+
+            prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+            nextBtn.innerHTML = currentStep === totalSteps
+                ? `Envoyer <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>`
+                : `Suivant <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+        }
+
+        function validateStep(step) {
+            if (step === 1 && !document.querySelector('input[name="projectType"]:checked')) {
+                alert('Veuillez sélectionner un type de projet'); return false;
+            }
+            if (step === 4) {
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                if (!firstName || !lastName || !email) { alert('Veuillez remplir les champs obligatoires'); return false; }
+                if (!email.includes('@')) { alert('Veuillez entrer un email valide'); return false; }
+            }
+            return true;
+        }
+
+        function showSuccess() {
+            formSteps.forEach(s => s.classList.remove('active'));
+            document.querySelector('.form-step[data-step="success"]').classList.add('active');
+            document.querySelector('.form-progress').style.display = 'none';
+            document.querySelector('.form-navigation').style.display = 'none';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (!validateStep(currentStep)) return;
+            if (currentStep === totalSteps) {
+                sendFormData(collectFormData());
+            } else {
+                currentStep++;
+                updateForm();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) { currentStep--; updateForm(); }
+        });
+
+        function collectFormData() {
+            return {
+                projectType: document.querySelector('input[name="projectType"]:checked')?.value || 'Non spécifié',
+                structureName: document.getElementById('structureName')?.value || '',
+                projectDescription: document.getElementById('projectDescription')?.value || '',
+                features: Array.from(document.querySelectorAll('input[name="features"]:checked')).map(f => f.value).join(', '),
+                timeline: document.querySelector('input[name="timeline"]:checked')?.value || 'Non spécifié',
+                selectedDate: document.getElementById('selectedDate')?.value || '',
+                budget: document.querySelector('input[name="budget"]:checked')?.value || 'Non spécifié',
+                firstName: document.getElementById('firstName')?.value || '',
+                lastName: document.getElementById('lastName')?.value || '',
+                email: document.getElementById('email')?.value || '',
+                phone: document.getElementById('phone')?.value || '',
+                contactMethod: document.querySelector('input[name="contactMethod"]:checked')?.value || 'email'
+            };
+        }
+
+        async function sendFormData(data) {
+            const FORMSPREE_ID = 'mojnvanr';
+
+            const message = `NOUVELLE DEMANDE CAREWAVE
+=========================
+Nom : ${data.firstName} ${data.lastName}
+Email : ${data.email}
+Téléphone : ${data.phone || 'Non renseigné'}
+Contact préféré : ${data.contactMethod}
+
+PROJET
+------
+Type : ${data.projectType}
+Structure : ${data.structureName || 'Non renseigné'}
+Description : ${data.projectDescription || 'Non renseigné'}
+Fonctionnalités : ${data.features || 'Non renseigné'}
+
+PLANNING & BUDGET
+-----------------
+Délai : ${data.timeline}
+Date souhaitée : ${data.selectedDate || 'Non précisée'}
+Budget : ${data.budget}`.trim();
+
+            showSuccess();
+
+            try {
+                await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        name: `${data.firstName} ${data.lastName}`,
+                        email: data.email,
+                        message
+                    })
+                });
+            } catch (e) { /* silent fallback */ }
+        }
+
+        // ---- CALENDAR ----
+        const calendarContainer = document.getElementById('calendarContainer');
+        const calendarDays = document.getElementById('calendarDays');
+        const calendarTitle = document.getElementById('calendarTitle');
+        const selectedDateInput = document.getElementById('selectedDate');
+        const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+        const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+        let currentDate = new Date();
+        let selectedDate = null;
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear(), month = currentDate.getMonth();
+            calendarTitle.textContent = `${months[month]} ${year}`;
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = (firstDay.getDay() + 6) % 7;
+            const today = new Date(); today.setHours(0,0,0,0);
+            calendarDays.innerHTML = '';
+            for (let i = 0; i < startDay; i++) { const e = document.createElement('button'); e.type='button'; e.className='calendar-day empty'; calendarDays.appendChild(e); }
+            for (let d = 1; d <= lastDay.getDate(); d++) {
+                const btn = document.createElement('button'); btn.type='button'; btn.className='calendar-day'; btn.textContent=d;
+                const thisDate = new Date(year, month, d);
+                if (thisDate < today) btn.classList.add('disabled');
+                else btn.addEventListener('click', () => selectDate(thisDate, btn));
+                if (thisDate.getTime()===today.getTime()) btn.classList.add('today');
+                if (selectedDate && thisDate.getTime()===selectedDate.getTime()) btn.classList.add('selected');
+                calendarDays.appendChild(btn);
+            }
+        }
+
+        function selectDate(date, el) {
+            selectedDate = date;
+            document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedDateInput.value = date.toISOString().split('T')[0];
+            selectedDateDisplay.textContent = `Date sélectionnée : ${date.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}`;
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); });
+        document.getElementById('nextMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); });
+
+        document.querySelectorAll('input[name="timeline"]').forEach(r => {
+            r.addEventListener('change', e => {
+                if (e.target.value === 'date') { calendarContainer.classList.add('visible'); renderCalendar(); }
+                else { calendarContainer.classList.remove('visible'); selectedDate=null; selectedDateInput.value=''; selectedDateDisplay.textContent=''; }
+            });
+        });
+
+        renderCalendar();
+    </script>
+</body>
+</html>
