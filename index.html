@@ -27,7 +27,7 @@
     <meta name="twitter:image" content="https://carewave.fr/mockupimac.png">
 
     <!-- Sécurité -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://s0.wordpress.com https://s0.wp.com data: blob:; connect-src 'self' https://formspree.io; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://s0.wordpress.com https://s0.wp.com data: blob:; connect-src 'self' https://formsubmit.co; frame-src 'none'; object-src 'none'; base-uri 'self';">
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <!-- Structured data -->
@@ -1200,7 +1200,6 @@
 
         async function sendFormData(data) {
             if (document.getElementById('_gotcha').value) return;
-            const FORMSPREE_ID = 'mojnvanr';
 
             const message = `NOUVELLE DEMANDE CAREWAVE
 =========================
@@ -1222,16 +1221,27 @@ Délai : ${data.timeline}
 Date souhaitée : ${data.selectedDate || 'Non précisée'}
 Budget : ${data.budget}`.trim();
 
+            const autoReply = `Bonjour ${data.firstName},
+
+Merci pour votre message ! Nous avons bien reçu votre demande concernant votre projet et vous recontacterons sous 24–48h.
+
+À très bientôt,
+L'équipe Carewave
+contact@carewave.fr`;
+
             showSuccess();
 
             try {
-                await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+                await fetch('https://formsubmit.co/ajax/contact@carewave.fr', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({
                         name: `${data.firstName} ${data.lastName}`,
                         email: data.email,
-                        message
+                        message,
+                        _subject: `Nouvelle demande — ${data.firstName} ${data.lastName}`,
+                        _replyto: data.email,
+                        _autoresponse: autoReply
                     })
                 });
             } catch (e) { /* silent fallback */ }
