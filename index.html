@@ -367,20 +367,25 @@
         .portfolio-card:hover .portfolio-image img { transform: scale(1.06); }
         .portfolio-overlay {
             position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(26,58,92,0.92) 0%, rgba(26,58,92,0.35) 50%, transparent 75%);
+            background: rgba(26,58,92,0);
             transition: background 0.4s;
         }
         .portfolio-card:hover .portfolio-overlay {
-            background: linear-gradient(to top, rgba(26,58,92,0.97) 0%, rgba(26,58,92,0.6) 60%, rgba(26,58,92,0.2) 100%);
+            background: rgba(26,58,92,0.08);
         }
         .portfolio-content {
-            position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
-            padding: 1.75rem;
+            position: absolute; left: 1.25rem; right: 1.25rem; bottom: 1.25rem; z-index: 2;
+            background: var(--color-white);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 10px 30px rgba(26,58,92,0.18);
+            transition: box-shadow 0.3s;
         }
+        .portfolio-card:hover .portfolio-content { box-shadow: 0 14px 36px rgba(26,58,92,0.26); }
         .portfolio-type { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-amber); font-weight: 600; display: block; margin-bottom: 0.4rem; }
-        .portfolio-content h3 { font-family: var(--font-display); font-size: 1.3rem; color: white; margin-bottom: 0; }
+        .portfolio-content h3 { font-family: var(--font-display); font-size: 1.3rem; color: var(--color-text); margin-bottom: 0; }
         .portfolio-content p {
-            font-size: 0.88rem; line-height: 1.5; color: rgba(255,255,255,0.75); margin: 0;
+            font-size: 0.88rem; line-height: 1.5; color: var(--color-text-muted); margin: 0;
             max-height: 0; overflow: hidden; opacity: 0;
             transition: max-height 0.4s var(--ease), opacity 0.35s, margin-top 0.35s;
         }
@@ -805,11 +810,11 @@
             </div>
             <div class="portfolio-grid">
                 <a href="https://cptsparis11.fr/" target="_blank" rel="noopener noreferrer" class="portfolio-card reveal">
-                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fcptsparis11.fr%2F?w=1200" alt="CPTS Paris 11" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-image"><img src="cptsparis11.jpg" alt="CPTS Paris 11" loading="lazy"><div class="portfolio-overlay"></div></div>
                     <div class="portfolio-content"><span class="portfolio-type">Structure coordonnée</span><h3>CPTS Paris 11</h3><p>Site pour la Communauté Professionnelle Territoriale de Santé du 11ème arrondissement.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
                 </a>
                 <a href="https://cptsparis5.com/" target="_blank" rel="noopener noreferrer" class="portfolio-card reveal">
-                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fcptsparis5.com%2F?w=1200" alt="CPTS Paris 5" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-image"><img src="cptsparis5.jpg" alt="CPTS Paris 5" loading="lazy"><div class="portfolio-overlay"></div></div>
                     <div class="portfolio-content"><span class="portfolio-type">Structure coordonnée</span><h3>CPTS Paris 5</h3><p>Site vitrine pour la Communauté Professionnelle Territoriale de Santé du 5ème arrondissement.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
                 </a>
                 <a href="https://popform.fr/" target="_blank" rel="noopener noreferrer" class="portfolio-card reveal">
@@ -817,19 +822,19 @@
                     <div class="portfolio-content"><span class="portfolio-type">Plateforme santé</span><h3>PopForm</h3><p>Moteur de recherche de formations pour orthophonistes. 594 formations référencées avec filtres avancés.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
                 </a>
                 <a href="https://cabinet-belair.fr/" target="_blank" rel="noopener noreferrer" class="portfolio-card reveal">
-                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fcabinet-belair.fr%2F?w=1200" alt="Cabinet Bel-Air" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-image"><img src="cabinet-belair.jpg" alt="Cabinet Bel-Air" loading="lazy"><div class="portfolio-overlay"></div></div>
                     <div class="portfolio-content"><span class="portfolio-type">Cabinet paramédical</span><h3>Cabinet Bel-Air</h3><p>Cabinet pluridisciplinaire Paris 12 : kinésithérapie, orthophonie, psychomotricité.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
                 </a>
                 <a href="https://assas-pilates-ballet.com/" target="_blank" rel="noopener noreferrer" class="portfolio-card reveal">
-                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fassas-pilates-ballet.com%2F?w=1200" alt="Assas Pilates Ballet" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-image"><img src="assas-pilates-ballet.jpg" alt="Assas Pilates Ballet" loading="lazy"><div class="portfolio-overlay"></div></div>
                     <div class="portfolio-content"><span class="portfolio-type">Studio bien-être</span><h3>Assas Pilates Ballet</h3><p>Studio de Pilates fondé par Leïla Dilhac, danseuse à l'Opéra de Paris.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
                 </a>
                 <a href="https://www.cabinet-kinesitherapie-paris.com/" target="_blank" rel="noopener noreferrer" class="portfolio-card reveal">
-                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fwww.cabinet-kinesitherapie-paris.com%2F?w=1200" alt="Cabinet des Grands Augustins" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-image"><img src="cabinet-grands-augustins.jpg" alt="Cabinet des Grands Augustins" loading="lazy"><div class="portfolio-overlay"></div></div>
                     <div class="portfolio-content"><span class="portfolio-type">Cabinet kinésithérapie</span><h3>Cabinet des Grands Augustins</h3><p>Cabinet de kinésithérapie Paris 6 avec 5 praticiens. Intégration Doctolib.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
                 </a>
                 <a href="https://www.cabinetsapiens.fr/" target="_blank" rel="noopener noreferrer" class="portfolio-card reveal">
-                    <div class="portfolio-image"><img src="https://s0.wordpress.com/mshots/v1/https%3A%2F%2Fwww.cabinetsapiens.fr%2F?w=1200" alt="Cabinet Sapiens" loading="lazy"><div class="portfolio-overlay"></div></div>
+                    <div class="portfolio-image"><img src="cabinet-sapiens.jpg" alt="Cabinet Sapiens" loading="lazy"><div class="portfolio-overlay"></div></div>
                     <div class="portfolio-content"><span class="portfolio-type">Cabinet médical</span><h3>Cabinet Sapiens</h3><p>Cabinet d'ostéopathie de Raphaël Monne à Toulouse. Prise de rendez-vous Doctolib intégrée.</p><span class="portfolio-link">Voir le site <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
                 </a>
             </div>
